@@ -1042,7 +1042,8 @@ static string com_filter(exec_context &ec, string cmdline, vector<string> &args)
             retval = "error: " + string(errptr);
         }
         else if (ec.ec_dry_run) {
-            if (args[0] == "filter-in" && !fs.empty()) {
+            if ((args[0] == "filter-in" || args[0] == "fi") &&
+                !fs.empty()) {
                 lnav_data.ld_preview_status_source.get_description()
                     .set_value("Match preview for :filter-in only works if there are no other filters");
             } else {
@@ -1439,6 +1440,7 @@ static string com_session(exec_context &ec, string cmdline, vector<string> &args
             args[1] != "enable-word-wrap" &&
             args[1] != "disable-word-wrap" &&
             args[1] != "filter-in" &&
+            args[1] != "fi" &&
             args[1] != "filter-out" &&
             args[1] != "enable-filter" &&
             args[1] != "disable-filter") {
@@ -3344,6 +3346,15 @@ readline_context::command_t STD_COMMANDS[] = {
             .with_summary("Remove a previously set highlight regular expression")
             .with_parameter(help_text("pattern", "The regular expression previously used with :highlight"))
             .with_example({"foobar"})
+    },
+    {
+        "fi",
+        com_filter,
+
+        help_text(":filter-in")
+            .with_summary("Only show lines that match the given regular expression in the current view")
+            .with_parameter(help_text("pattern", "The regular expression to match"))
+        .with_example({"dhclient"})
     },
     {
         "filter-in",
